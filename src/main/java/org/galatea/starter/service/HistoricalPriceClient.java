@@ -1,0 +1,21 @@
+package org.galatea.starter.service;
+
+import java.util.List;
+import org.galatea.starter.domain.IexHistoricalPrice;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@FeignClient(name = "IEXHistoricalClient", url = "${spring.rest.iexNewBasePath}")
+public interface HistoricalPriceClient {
+
+  /**
+   * Get historical price for each stock symbol passed in.
+   *
+   * @param symbols stock symbols to get historical price for.
+   * @return a list of historical price for each symbol.
+   */
+  @GetMapping("/stock/{symbols}/chart/{time}?token=pk_239cfde61169444c95c19958b591543e")
+  List<IexHistoricalPrice> getHistoricalPrices(@PathVariable("symbols") String symbols,
+      @PathVariable("time") String time);
+}
