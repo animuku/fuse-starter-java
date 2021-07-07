@@ -3,7 +3,7 @@
   "name": "historicalPricesWithRange",
   "request": {
     "method": "GET",
-    "url": "/stock/AAPL/chart/10d?token=pk_239cfde61169444c95c19958b591543e"
+    "url": "/stock/AAPL/chart/10d?token=%24%7BiexToken%7D"
   },
   "response": {
     "status": 200,
