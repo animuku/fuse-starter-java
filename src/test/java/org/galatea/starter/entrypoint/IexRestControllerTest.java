@@ -105,5 +105,17 @@ public class IexRestControllerTest extends ASpringTest {
         .andReturn();
   }
 
+  @Test
+  public void testGetHistoricalPriceWithDate() throws Exception{
+    MvcResult result = this.mvc.perform(
+        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+        .get("/iex/historicalPrices?symbols=AAPL&date=20210615")
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].close").value(126.3))
+        .andExpect(jsonPath("$[0].volume").value(18920))
+        .andReturn();
+  }
+
 
 }
