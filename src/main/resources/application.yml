@@ -1,6 +1,5 @@
 # Global properties go here
 spring:
-  iexToken: pk_239cfde61169444c95c19958b591543e
   profiles:
     active: test
   main:

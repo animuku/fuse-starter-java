@@ -16,11 +16,11 @@ public interface HistoricalPriceClient {
    * @return a list of historical price for each symbol.
    */
 
-  @GetMapping("/stock/{symbols}/chart/{range}?token=${spring.iexToken}")
+  @GetMapping("/stock/{symbols}/chart/{range}?token=${iexToken}")
   List<IexHistoricalPrice> getHistoricalPricesWithRange(@PathVariable("symbols") String symbols,
       @PathVariable("range") String range);
 
-  @GetMapping("/stock/{symbols}/chart/date/{date}?token=${spring.iexToken}")
+  @GetMapping("/stock/{symbols}/chart/date/{date}?token=${iexToken}")
   List<IexHistoricalPrice> getHistoricalPricesWithDate(@PathVariable("symbols") String symbols,
       @PathVariable("date") String date);
 
