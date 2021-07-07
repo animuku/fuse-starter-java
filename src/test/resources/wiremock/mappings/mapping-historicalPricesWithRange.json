@@ -1,0 +1,60 @@
+{
+  "id": "4dc720df-b9cd-465e-a27e-68ccdb49ef32",
+  "name": "historicalPrices",
+  "request": {
+    "method": "GET",
+    "url": "/stock/AAPL/chart/10d?token=pk_239cfde61169444c95c19958b591543e"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": [
+      {
+        "close": 136.96,
+        "high": 137.41,
+        "low": 135.87,
+        "open": 136.17,
+        "symbol": "AAPL",
+        "volume": 63261393,
+        "date": "2021-06-30"
+      },
+      {
+        "close": 137.27,
+        "high": 137.33,
+        "low": 137.745,
+        "open": 137.9,
+        "symbol": "AAPL",
+        "volume": 52485781,
+        "date": "2021-07-01"
+      },
+      {
+        "close": 139.96,
+        "high": 140,
+        "low": 137.745,
+        "open": 137.9,
+        "symbol": "AAPL",
+        "volume": 78945572,
+        "date": "2021-07-02"
+      }
+    ],
+    "headers": {
+      "Server": "nginx",
+      "Date": "Thu, 08 Aug 2019 14:14:08 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Connection": "keep-alive",
+      "set-cookie": "ctoken=4decd1e639244d498ef3bacaae5238bc; Domain=.iextrading.com; Path=/; Expires=Fri, 09 Aug 2019 02:14:08 GMT; Secure",
+      "Content-Security-Policy": "default-src 'self'; child-src 'none'; object-src 'none'; style-src 'self' 'unsafe-inline'; font-src data:; frame-src 'self'; connect-src 'self' https://auth.iextrading.com https://api.iextrading.com https://api.iextrading.com wss://iextrading.com wss://tops.iextrading.com wss://api.iextrading.com wss://iextrading.com https://iextrading.com/member-center; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com/analytics.js;",
+      "X-Content-Security-Policy": "default-src 'self'; child-src 'none'; object-src 'none'; style-src 'self' 'unsafe-inline'; font-src data:; frame-src 'self'; connect-src 'self' https://auth.iextrading.com https://api.iextrading.com https://api.iextrading.com wss://iextrading.com wss://tops.iextrading.com wss://api.iextrading.com wss://iextrading.com https://iextrading.com/member-center; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com/analytics.js;",
+      "Frame-Options": "SAMEORIGIN",
+      "X-Frame-Options": "SAMEORIGIN",
+      "X-Content-Type-Options": "nosniff",
+      "Strict-Transport-Security": "max-age=15768000",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+    }
+  },
+  "uuid": "4dc720df-b9cd-465e-a27e-68ccdb49ef32",
+  "persistent": true,
+  "insertionIndex": 4
+}

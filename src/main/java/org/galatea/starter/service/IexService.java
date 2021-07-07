@@ -54,13 +54,15 @@ public class IexService {
    * @param symbols the list of symbols to get a historical price for.
    * @return a list of historical price objects for each symbol that is passed.
    */
-  public List<IexHistoricalPrice> getHistoricalPrices(final String symbols, final String time) {
+  public List<IexHistoricalPrice> getHistoricalPrices(final String symbols, final String range,
+      final String date) {
     if (symbols.length() == 0) {
       return Collections.emptyList();
+    } else if (date == null) {
+      return newClient.getHistoricalPricesWithRange(symbols, range);
     } else {
-      return newClient.getHistoricalPrices(symbols, time);
+      return newClient.getHistoricalPricesWithDate(symbols, date);
     }
   }
-
-
 }
+
