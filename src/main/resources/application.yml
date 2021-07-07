@@ -1,4 +1,5 @@
 # Global properties go here
+iexToken: ${IEX_TOKEN}
 spring:
   profiles:
     active: test
