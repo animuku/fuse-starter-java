@@ -5,6 +5,9 @@ spring:
     active: test
   main:
     allow-bean-definition-overriding: true
+  h2:
+    console:
+      enabled: true
   datasource:
     # this maps to an in-memory database that lives within a single VM.
     # in case you want to use H2 with a file persistence or as a service
