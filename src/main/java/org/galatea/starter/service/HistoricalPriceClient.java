@@ -16,7 +16,7 @@ public interface HistoricalPriceClient {
    * @return a list of historical price for each symbol.
    */
 
-  @GetMapping("/stock/{symbols}/chart/{range}?token=${iexToken}")
+  @GetMapping("/stock/{symbols}/chart/{range}?token=pk_239cfde61169444c95c19958b591543e")
   List<IexHistoricalPrice> getHistoricalPricesWithRange(@PathVariable("symbols") String symbols,
       @PathVariable("range") String range);
 
@@ -26,7 +26,7 @@ public interface HistoricalPriceClient {
    * @param symbols stock symbols to get historical price for.
    * @return a list of historical price for each symbol.
    */
-  @GetMapping("/stock/{symbols}/chart/date/{date}?token=${iexToken}")
+  @GetMapping("/stock/{symbols}/chart/date/{date}?token=pk_239cfde61169444c95c19958b591543e")
   List<IexHistoricalPrice> getHistoricalPricesWithDate(@PathVariable("symbols") String symbols,
       @PathVariable("date") String date);
 

@@ -11,8 +11,6 @@ import javax.persistence.Id;
 @Entity
 public class HistoricalPriceDB {
   @Id
-  @GeneratedValue
-  private Integer id;
   private String url;
   private BigDecimal close;
   private BigDecimal high;

@@ -22,7 +22,7 @@ public class HistoricalPriceDBService {
   }
 
   public boolean exists(String url){
-    return repo.existsByUrl(url);
+    return repo.existsById(url);
   }
 
 

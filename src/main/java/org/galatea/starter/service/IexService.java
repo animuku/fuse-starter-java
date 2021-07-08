@@ -12,6 +12,7 @@ import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import java.time.LocalDate;
 
 /**
  * A layer for transformation, aggregation, and business required when retrieving data from IEX.
@@ -67,7 +68,7 @@ public class IexService {
 
       if (!service.exists(symbols + range)) {
         List<IexHistoricalPrice> prices = newClient.getHistoricalPricesWithRange(symbols, range);
-        createHistoricalPriceDBObject(prices, service, symbols + range);
+        createHistoricalPriceDBObject(prices, service, symbols, range);
         return prices;
       } else {
         List<HistoricalPriceDB> prices = service.getPrices(symbols + range);
@@ -87,14 +88,25 @@ public class IexService {
   }
 
   public void createHistoricalPriceDBObject(List<IexHistoricalPrice> prices,
-      HistoricalPriceDBService service, String id) {
+      HistoricalPriceDBService service, String symbol, String range) {
+//    for (IexHistoricalPrice price : prices) {
+//      HistoricalPriceDB obj =
+//          new HistoricalPriceDB(id, price.getClose(), price.getHigh(),
+//              price.getLow(), price.getOpen(), price.getSymbol(), price.getVolume(),
+//              price.getDate());
+//      service.save(obj);
+//    }
+    LocalDate today = LocalDate.now();
     for (IexHistoricalPrice price : prices) {
+      LocalDate newDate = today.minusDays(1);
+      String url = symbol + newDate.toString();
       HistoricalPriceDB obj =
-          new HistoricalPriceDB(id, price.getClose(), price.getHigh(),
-              price.getLow(), price.getOpen(), price.getSymbol(), price.getVolume(),
-              price.getDate());
+          new HistoricalPriceDB(url, price.getClose(), price.getHigh(), price.getLow(),
+              price.getOpen(),price.getSymbol(),price.getVolume(),price.getDate());
       service.save(obj);
     }
+
+
   }
 
   public List<IexHistoricalPrice> createReturnableObject(List<HistoricalPriceDB> prices) {
@@ -107,6 +119,10 @@ public class IexService {
       pricesToReturn.add(obj);
     }
     return pricesToReturn;
+  }
+
+  public void checkAndRetrieve(){
+
   }
 }
 
