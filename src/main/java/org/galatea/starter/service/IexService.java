@@ -90,11 +90,11 @@ public class IexService {
         List<IexHistoricalPrice> prices =
             newClient.getHistoricalPricesWithRange(symbol, rangeOfDays);
         for (IexHistoricalPrice price : prices) {
-          Date d = price.getDate();
+          System.out.println(price.getDate());
 //          Date modifiedDate = new Date(d.getYear(), d.getMonth(), d.getDate());
           HistoricalPriceDB objToSave =
               new HistoricalPriceDB(price.getClose(), price.getHigh(), price.getLow(),
-                  price.getOpen(), price.getSymbol(), price.getVolume(), d,
+                  price.getOpen(), price.getSymbol(), price.getVolume(), price.getDate(),
                   LocalTime.now());
           service.save(objToSave);
         }
