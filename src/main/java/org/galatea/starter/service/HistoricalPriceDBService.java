@@ -1,6 +1,7 @@
 package org.galatea.starter.service;
 
-import java.util.List;
+import java.util.Optional;
+import org.galatea.starter.domain.CompositePrimaryKey;
 import org.galatea.starter.domain.HistoricalPriceDB;
 import org.galatea.starter.domain.rpsy.HistoricalPriceDBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +14,16 @@ public class HistoricalPriceDBService {
   HistoricalPriceDBRepository repo;
 
 
-  public List<HistoricalPriceDB> getPrices(String url) {
-    return repo.findHistoricalPriceDBByUrl(url);
+  public Optional<HistoricalPriceDB> getPrices(CompositePrimaryKey obj) {
+    return repo.findById(obj);
   }
 
-  public void save(HistoricalPriceDB price){
+  public void save(HistoricalPriceDB price) {
     repo.save(price);
   }
 
-  public boolean exists(String url){
-    return repo.existsById(url);
+  public boolean exists(CompositePrimaryKey obj) {
+    return repo.existsById(obj);
   }
 
 

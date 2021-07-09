@@ -1,11 +1,16 @@
 package org.galatea.starter.service;
 
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.galatea.starter.domain.CompositePrimaryKey;
 import org.galatea.starter.domain.HistoricalPriceDB;
 import org.galatea.starter.domain.IexHistoricalPrice;
 import org.galatea.starter.domain.IexLastTradedPrice;
@@ -65,64 +70,61 @@ public class IexService {
     if (symbols.length() == 0) {
       return Collections.emptyList();
     } else if (date == null) {
-
-      if (!service.exists(symbols + range)) {
-        List<IexHistoricalPrice> prices = newClient.getHistoricalPricesWithRange(symbols, range);
-        createHistoricalPriceDBObject(prices, service, symbols, range);
-        return prices;
-      } else {
-        List<HistoricalPriceDB> prices = service.getPrices(symbols + range);
-        return createReturnableObject(prices);
-      }
-
+      checkAndRetrieve(service, symbols, range);
+      return retrieveFromDB(service, symbols, range);
     } else {
-      if (!service.exists(symbols + date)) {
-        List<IexHistoricalPrice> prices = newClient.getHistoricalPricesWithDate(symbols, date);
-        createHistoricalPriceDBObject(prices, service, symbols + date);
-        return prices;
-      } else {
-        List<HistoricalPriceDB> prices = service.getPrices(symbols + date);
-        return createReturnableObject(prices);
+      return Collections.emptyList();
+    }
+  }
+
+  public void checkAndRetrieve(HistoricalPriceDBService service, String symbol,
+      String rangeOfDays) {
+    String r = rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0];
+    int range = Integer.parseInt(r);
+    LocalDate today = LocalDate.now();
+    for (int i = 1; i <= range; i++) {
+      LocalDate date = today.minusDays(i);
+      CompositePrimaryKey obj = new CompositePrimaryKey(symbol,
+          Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+      if (!service.exists(obj)) {
+        List<IexHistoricalPrice> prices =
+            newClient.getHistoricalPricesWithRange(symbol, rangeOfDays);
+        for (IexHistoricalPrice price : prices) {
+          Date d = price.getDate();
+//          Date modifiedDate = new Date(d.getYear(), d.getMonth(), d.getDate());
+          HistoricalPriceDB objToSave =
+              new HistoricalPriceDB(price.getClose(), price.getHigh(), price.getLow(),
+                  price.getOpen(), price.getSymbol(), price.getVolume(), d,
+                  LocalTime.now());
+          service.save(objToSave);
+        }
+        return;
       }
     }
   }
 
-  public void createHistoricalPriceDBObject(List<IexHistoricalPrice> prices,
-      HistoricalPriceDBService service, String symbol, String range) {
-//    for (IexHistoricalPrice price : prices) {
-//      HistoricalPriceDB obj =
-//          new HistoricalPriceDB(id, price.getClose(), price.getHigh(),
-//              price.getLow(), price.getOpen(), price.getSymbol(), price.getVolume(),
-//              price.getDate());
-//      service.save(obj);
-//    }
+  List<IexHistoricalPrice> retrieveFromDB(HistoricalPriceDBService service, String symbol,
+      String rangeOfDays) {
+    List<IexHistoricalPrice> returnList = new ArrayList<>();
+//    rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+    String r = rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0];
+    int range = Integer.parseInt(r);
     LocalDate today = LocalDate.now();
-    for (IexHistoricalPrice price : prices) {
-      LocalDate newDate = today.minusDays(1);
-      String url = symbol + newDate.toString();
-      HistoricalPriceDB obj =
-          new HistoricalPriceDB(url, price.getClose(), price.getHigh(), price.getLow(),
-              price.getOpen(),price.getSymbol(),price.getVolume(),price.getDate());
-      service.save(obj);
+    for (int i = 1; i <= range; i++) {
+      LocalDate date = today.minusDays(i);
+      CompositePrimaryKey obj = new CompositePrimaryKey(symbol,
+          Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+      Optional<HistoricalPriceDB> p = service.getPrices(obj);
+      if (p.isPresent()) {
+        HistoricalPriceDB price = p.get();
+        IexHistoricalPrice priceToReturn =
+            IexHistoricalPrice.builder().close(price.getClose()).open(price.getOpen())
+                .high(price.getHigh()).low(price.getLow()).symbol(price.getSymbol())
+                .date(price.getDate()).volume(price.getVolume()).build();
+        returnList.add(priceToReturn);
+      }
     }
-
-
-  }
-
-  public List<IexHistoricalPrice> createReturnableObject(List<HistoricalPriceDB> prices) {
-    List<IexHistoricalPrice> pricesToReturn = new ArrayList<>();
-    for (HistoricalPriceDB price : prices) {
-      IexHistoricalPrice obj =
-          IexHistoricalPrice.builder().close(price.getClose()).open(price.getOpen())
-              .high(price.getHigh()).low(price.getLow()).symbol(price.getSymbol())
-              .date(price.getDate()).volume(price.getVolume()).build();
-      pricesToReturn.add(obj);
-    }
-    return pricesToReturn;
-  }
-
-  public void checkAndRetrieve(){
-
+    return returnList;
   }
 }
 
