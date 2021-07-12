@@ -30,4 +30,8 @@ public interface HistoricalPriceClient {
   List<IexHistoricalPrice> getHistoricalPricesWithDate(@PathVariable("symbols") String symbols,
       @PathVariable("date") String date);
 
+  @GetMapping("/stock/{symbols}/chart/date/{date}?chartByDay=true&token=pk_239cfde61169444c95c19958b591543e")
+  List<IexHistoricalPrice> getHistoricalPriceWithDateByDay(@PathVariable("symbols") String symbols,
+      @PathVariable("date") String date);
+
 }

@@ -2,6 +2,7 @@ package org.galatea.starter.service;
 
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -82,23 +83,23 @@ public class IexService {
     String r = rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0];
     int range = Integer.parseInt(r);
     LocalDate today = LocalDate.now();
-    for (int i = 1; i <= range; i++) {
+    for (int i = range; i >= 1; i--) {
       LocalDate date = today.minusDays(i);
+      DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyyMMdd");
       CompositePrimaryKey obj = new CompositePrimaryKey(symbol,
           Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
       if (!service.exists(obj)) {
         List<IexHistoricalPrice> prices =
-            newClient.getHistoricalPricesWithRange(symbol, rangeOfDays);
+            newClient.getHistoricalPriceWithDateByDay(symbol, date.format(formatters));
         for (IexHistoricalPrice price : prices) {
-          System.out.println(price.getDate());
-//          Date modifiedDate = new Date(d.getYear(), d.getMonth(), d.getDate());
+          Date d = price.getDate();
+          Date modifiedDate = new Date(d.getYear(), d.getMonth(), d.getDate() + 1);
           HistoricalPriceDB objToSave =
               new HistoricalPriceDB(price.getClose(), price.getHigh(), price.getLow(),
-                  price.getOpen(), price.getSymbol(), price.getVolume(), price.getDate(),
+                  price.getOpen(), price.getSymbol(), price.getVolume(), modifiedDate,
                   LocalTime.now());
           service.save(objToSave);
         }
-        return;
       }
     }
   }
