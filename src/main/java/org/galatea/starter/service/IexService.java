@@ -74,14 +74,21 @@ public class IexService {
       checkAndRetrieve(service, symbols, range);
       return retrieveFromDB(service, symbols, range);
     } else {
-      return Collections.emptyList();
+      List<IexHistoricalPrice> prices = newClient.getHistoricalPricesWithDate(symbols, date);
+      for (IexHistoricalPrice price : prices) {
+        System.out.println(price.getDate());
+      }
+      return prices;
     }
   }
 
   public void checkAndRetrieve(HistoricalPriceDBService service, String symbol,
       String rangeOfDays) {
     String r = rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0];
-    int range = Integer.parseInt(r);
+    int range = 30;
+    if (r.length() != 0) {
+      range = Integer.parseInt(r);
+    }
     LocalDate today = LocalDate.now();
     for (int i = range; i >= 1; i--) {
       LocalDate date = today.minusDays(i);
@@ -109,7 +116,10 @@ public class IexService {
     List<IexHistoricalPrice> returnList = new ArrayList<>();
 //    rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
     String r = rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0];
-    int range = Integer.parseInt(r);
+    int range = 30;
+    if (r.length() != 0) {
+      range = Integer.parseInt(r);
+    }
     LocalDate today = LocalDate.now();
     for (int i = 1; i <= range; i++) {
       LocalDate date = today.minusDays(i);

@@ -13,7 +13,7 @@ public class IexHistoricalPrice {
   private BigDecimal high;
   private BigDecimal low;
   private BigDecimal open;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy-hh-mm-ss")
   private Date date;
   private String symbol;
   private Integer volume;
