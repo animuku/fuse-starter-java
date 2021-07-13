@@ -4,6 +4,7 @@ import io.swagger.models.auth.In;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 import javax.persistence.Entity;
@@ -23,7 +24,7 @@ public class HistoricalPriceDB {
   private String symbol;
   private Integer volume;
   @Id
-  private Date date;
+  private LocalDate date;
 
   private LocalTime timestamp;
 
@@ -31,7 +32,7 @@ public class HistoricalPriceDB {
   }
 
   public HistoricalPriceDB(BigDecimal close, BigDecimal high, BigDecimal low,
-      BigDecimal open, String symbol, Integer volume, Date date, LocalTime timestamp) {
+      BigDecimal open, String symbol, Integer volume, LocalDate date, LocalTime timestamp) {
     this.close = close;
     this.high = high;
     this.low = low;
@@ -90,15 +91,15 @@ public class HistoricalPriceDB {
     this.volume = volume;
   }
 
-  public Date getDate() {
+  public LocalDate getDate() {
     return date;
   }
 
-  public void setDate(Date date) {
+  public void setDate(LocalDate date) {
     this.date = date;
   }
 
   public LocalTime getTime() {return timestamp;}
 
-  public void setTime(LocalTime time) {this.timestamp = timestamp;}
+  public void setTime(LocalTime timestamp) {this.timestamp = timestamp;}
 }

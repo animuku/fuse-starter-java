@@ -1,5 +1,6 @@
 package org.galatea.starter.service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -93,17 +94,17 @@ public class IexService {
     for (int i = range; i >= 1; i--) {
       LocalDate date = today.minusDays(i);
       DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyyMMdd");
-      CompositePrimaryKey obj = new CompositePrimaryKey(symbol,
-          Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+      System.out.println(date.format(formatters));
+      CompositePrimaryKey obj = new CompositePrimaryKey(symbol, date);
       if (!service.exists(obj)) {
         List<IexHistoricalPrice> prices =
             newClient.getHistoricalPriceWithDateByDay(symbol, date.format(formatters));
         for (IexHistoricalPrice price : prices) {
-          Date d = price.getDate();
-          Date modifiedDate = new Date(d.getYear(), d.getMonth(), d.getDate() + 1);
+          LocalDate d = price.getDate();
+//          Date modifiedDate = new Date(d.getYear(), d.getMonth(), d.getDate() + 1);
           HistoricalPriceDB objToSave =
               new HistoricalPriceDB(price.getClose(), price.getHigh(), price.getLow(),
-                  price.getOpen(), price.getSymbol(), price.getVolume(), modifiedDate,
+                  price.getOpen(), price.getSymbol(), price.getVolume(), date,
                   LocalTime.now());
           service.save(objToSave);
         }
@@ -123,8 +124,7 @@ public class IexService {
     LocalDate today = LocalDate.now();
     for (int i = 1; i <= range; i++) {
       LocalDate date = today.minusDays(i);
-      CompositePrimaryKey obj = new CompositePrimaryKey(symbol,
-          Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+      CompositePrimaryKey obj = new CompositePrimaryKey(symbol, date);
       Optional<HistoricalPriceDB> p = service.getPrices(obj);
       if (p.isPresent()) {
         HistoricalPriceDB price = p.get();

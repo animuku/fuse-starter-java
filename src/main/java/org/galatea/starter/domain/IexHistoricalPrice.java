@@ -2,6 +2,8 @@ package org.galatea.starter.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.Builder;
 import lombok.Data;
@@ -13,8 +15,7 @@ public class IexHistoricalPrice {
   private BigDecimal high;
   private BigDecimal low;
   private BigDecimal open;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy-hh-mm-ss")
-  private Date date;
+  private LocalDate date;
   private String symbol;
   private Integer volume;
 }
