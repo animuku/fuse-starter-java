@@ -72,18 +72,15 @@ public class IexService {
     if (symbols.length() == 0) {
       return Collections.emptyList();
     } else if (date == null) {
-      checkAndRetrieve(service, symbols, range);
-      return retrieveFromDB(service, symbols, range);
+      checkAndRetrieveForRange(service, symbols, range);
+      return retrieveFromDBForRange(service, symbols, range);
     } else {
-      List<IexHistoricalPrice> prices = newClient.getHistoricalPricesWithDate(symbols, date);
-      for (IexHistoricalPrice price : prices) {
-        System.out.println(price.getDate());
-      }
-      return prices;
+      checkAndRetrieveForDate(service, symbols, date);
+      return retrieveFromDBForDate(service, symbols, date);
     }
   }
 
-  public void checkAndRetrieve(HistoricalPriceDBService service, String symbol,
+  public void checkAndRetrieveForRange(HistoricalPriceDBService service, String symbol,
       String rangeOfDays) {
     String r = rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0];
     int range = 30;
@@ -94,17 +91,16 @@ public class IexService {
     for (int i = range; i >= 1; i--) {
       LocalDate date = today.minusDays(i);
       DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyyMMdd");
-      System.out.println(date.format(formatters));
-      CompositePrimaryKey obj = new CompositePrimaryKey(symbol, date);
+      CompositePrimaryKey obj = new CompositePrimaryKey(symbol, date,
+          LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0));
       if (!service.exists(obj)) {
         List<IexHistoricalPrice> prices =
             newClient.getHistoricalPriceWithDateByDay(symbol, date.format(formatters));
         for (IexHistoricalPrice price : prices) {
-          LocalDate d = price.getDate();
-//          Date modifiedDate = new Date(d.getYear(), d.getMonth(), d.getDate() + 1);
+          LocalTime t = LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
           HistoricalPriceDB objToSave =
               new HistoricalPriceDB(price.getClose(), price.getHigh(), price.getLow(),
-                  price.getOpen(), price.getSymbol(), price.getVolume(), date,
+                  price.getOpen(), price.getSymbol(), price.getVolume(), price.getDate(), t,
                   LocalTime.now());
           service.save(objToSave);
         }
@@ -112,10 +108,10 @@ public class IexService {
     }
   }
 
-  List<IexHistoricalPrice> retrieveFromDB(HistoricalPriceDBService service, String symbol,
+  public List<IexHistoricalPrice> retrieveFromDBForRange(HistoricalPriceDBService service,
+      String symbol,
       String rangeOfDays) {
     List<IexHistoricalPrice> returnList = new ArrayList<>();
-//    rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
     String r = rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0];
     int range = 30;
     if (r.length() != 0) {
@@ -124,18 +120,67 @@ public class IexService {
     LocalDate today = LocalDate.now();
     for (int i = 1; i <= range; i++) {
       LocalDate date = today.minusDays(i);
-      CompositePrimaryKey obj = new CompositePrimaryKey(symbol, date);
+      CompositePrimaryKey obj = new CompositePrimaryKey(symbol, date,
+          LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0));
       Optional<HistoricalPriceDB> p = service.getPrices(obj);
       if (p.isPresent()) {
         HistoricalPriceDB price = p.get();
         IexHistoricalPrice priceToReturn =
             IexHistoricalPrice.builder().close(price.getClose()).open(price.getOpen())
                 .high(price.getHigh()).low(price.getLow()).symbol(price.getSymbol())
-                .date(price.getDate()).volume(price.getVolume()).build();
+                .date(price.getDate()).volume(price.getVolume()).minute(price.getMinute()).build();
         returnList.add(priceToReturn);
       }
     }
     return returnList;
+  }
+
+  public void checkAndRetrieveForDate(HistoricalPriceDBService service, String symbols,
+      String date) {
+    int year = Integer.parseInt(date.substring(0, 4));
+    int month = Integer.parseInt(date.substring(4, 6));
+    int day = Integer.parseInt(date.substring(6, 8));
+    LocalDate d = LocalDate.now().withYear(year).withMonth(month).withDayOfMonth(day);
+    LocalTime start = LocalTime.now().withHour(9).withMinute(30).withSecond(0).withNano(0);
+    LocalTime end = LocalTime.now().withHour(16).withMinute(0).withSecond(0).withNano(0);
+    for (LocalTime time = start; time.isBefore(end); time = time.plusMinutes(1)) {
+      CompositePrimaryKey key = new CompositePrimaryKey(symbols, d, time);
+      if (!service.exists(key)) {
+        List<IexHistoricalPrice> returnList = newClient.getHistoricalPricesWithDate(symbols, date);
+        for (IexHistoricalPrice price : returnList) {
+          HistoricalPriceDB obj =
+              new HistoricalPriceDB(price.getClose(), price.getHigh(), price.getLow(),
+                  price.getOpen(), symbols, price.getVolume(), price.getDate(),
+                  price.getMinute(), LocalTime.now());
+          service.save(obj);
+        }
+        return;
+      }
+    }
+  }
+
+  public List<IexHistoricalPrice> retrieveFromDBForDate(HistoricalPriceDBService service,
+      String symbols, String date) {
+    List<IexHistoricalPrice> list = new ArrayList<>();
+    int year = Integer.parseInt(date.substring(0, 4));
+    int month = Integer.parseInt(date.substring(4, 6));
+    int day = Integer.parseInt(date.substring(6, 8));
+    LocalDate d = LocalDate.now().withYear(year).withMonth(month).withDayOfMonth(day);
+    LocalTime start = LocalTime.now().withHour(9).withMinute(30).withSecond(0).withNano(0);
+    LocalTime end = LocalTime.now().withHour(16).withMinute(0).withSecond(0).withNano(0);
+    for (LocalTime time = start; time.isBefore(end); time = time.plusMinutes(1)) {
+      CompositePrimaryKey key = new CompositePrimaryKey(symbols, d, time);
+      Optional<HistoricalPriceDB> temp = service.getPrices(key);
+      if (temp.isPresent()) {
+        HistoricalPriceDB obj = temp.get();
+        IexHistoricalPrice price =
+            IexHistoricalPrice.builder().close(obj.getClose()).open(obj.getOpen())
+                .high(obj.getHigh()).low(obj.getLow()).symbol(obj.getSymbol())
+                .date(obj.getDate()).volume(obj.getVolume()).minute(obj.getMinute()).build();
+        list.add(price);
+      }
+    }
+    return list;
   }
 }
 

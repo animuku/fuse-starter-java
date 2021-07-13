@@ -25,14 +25,16 @@ public class HistoricalPriceDB {
   private Integer volume;
   @Id
   private LocalDate date;
-
+  @Id
+  private LocalTime minute;
   private LocalTime timestamp;
 
   public HistoricalPriceDB() {
   }
 
   public HistoricalPriceDB(BigDecimal close, BigDecimal high, BigDecimal low,
-      BigDecimal open, String symbol, Integer volume, LocalDate date, LocalTime timestamp) {
+      BigDecimal open, String symbol, Integer volume, LocalDate date, LocalTime minute,
+      LocalTime timestamp) {
     this.close = close;
     this.high = high;
     this.low = low;
@@ -40,6 +42,7 @@ public class HistoricalPriceDB {
     this.symbol = symbol;
     this.volume = volume;
     this.date = date;
+    this.minute = minute;
     this.timestamp = timestamp;
   }
 
@@ -102,4 +105,8 @@ public class HistoricalPriceDB {
   public LocalTime getTime() {return timestamp;}
 
   public void setTime(LocalTime timestamp) {this.timestamp = timestamp;}
+
+  public LocalTime getMinute() {return minute;}
+
+  public void setMinute(LocalTime minute) {this.minute = minute;}
 }
