@@ -1,5 +1,6 @@
 package org.galatea.starter.service;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import java.time.LocalDate;
 
 /**
  * A layer for transformation, aggregation, and business required when retrieving data from IEX.
@@ -126,10 +126,10 @@ public class IexService {
 
   public void checkAndFetchForDate(HistoricalPriceEntityService service, String symbols,
       String date) {
-    int[] parsedDate = parseDateString(date);
-    int year = parsedDate[0];
-    int month = parsedDate[1];
-    int day = parsedDate[2];
+    LocalDate parsedDate = parseDateString(date);
+    int year = parsedDate.getYear();
+    int month = parsedDate.getMonthValue();
+    int day = parsedDate.getDayOfMonth();
     LocalDate d = LocalDate.now().withYear(year).withMonth(month).withDayOfMonth(day);
     LocalTime start = LocalTime.now().withHour(9).withMinute(30).withSecond(0).withNano(0);
     LocalTime end = LocalTime.now().withHour(16).withMinute(0).withSecond(0).withNano(0);
@@ -152,10 +152,10 @@ public class IexService {
   public List<IexHistoricalPrice> retrieveFromDBForDate(HistoricalPriceEntityService service,
       String symbols, String date) {
     List<IexHistoricalPrice> list = new ArrayList<>();
-    int[] parsedDate = parseDateString(date);
-    int year = parsedDate[0];
-    int month = parsedDate[1];
-    int day = parsedDate[2];
+    LocalDate parsedDate = parseDateString(date);
+    int year = parsedDate.getYear();
+    int month = parsedDate.getMonthValue();
+    int day = parsedDate.getDayOfMonth();
     LocalDate d = LocalDate.now().withYear(year).withMonth(month).withDayOfMonth(day);
     LocalTime start = LocalTime.now().withHour(9).withMinute(30).withSecond(0).withNano(0);
     LocalTime end = LocalTime.now().withHour(16).withMinute(0).withSecond(0).withNano(0);
@@ -182,14 +182,10 @@ public class IexService {
     return 30;
   }
 
-  public int[] parseDateString(String date) {
+  public LocalDate parseDateString(String date) {
     int[] result = new int[3];
     DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyyMMdd");
-    LocalDate d = LocalDate.parse(date, formatters);
-    result[0] = d.getYear();
-    result[1] = d.getMonthValue();
-    result[2] = d.getDayOfMonth();
-    return result;
+    return LocalDate.parse(date, formatters);
   }
 }
 

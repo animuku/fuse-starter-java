@@ -15,7 +15,6 @@ import java.util.Set;
 import org.galatea.starter.ASpringTest;
 import org.galatea.starter.domain.SettlementMission;
 import org.galatea.starter.domain.TradeAgreement;
-import org.galatea.starter.domain.rpsy.HistoricalPriceEntityRepository;
 import org.galatea.starter.domain.rpsy.ISettlementMissionRpsy;
 import org.galatea.starter.entrypoint.exception.EntityNotFoundException;
 import org.galatea.starter.testutils.TestDataGenerator;
