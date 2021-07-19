@@ -15,7 +15,7 @@ import java.util.Set;
 import org.galatea.starter.ASpringTest;
 import org.galatea.starter.domain.SettlementMission;
 import org.galatea.starter.domain.TradeAgreement;
-import org.galatea.starter.domain.rpsy.HistoricalPriceDBRepository;
+import org.galatea.starter.domain.rpsy.HistoricalPriceEntityRepository;
 import org.galatea.starter.domain.rpsy.ISettlementMissionRpsy;
 import org.galatea.starter.entrypoint.exception.EntityNotFoundException;
 import org.galatea.starter.testutils.TestDataGenerator;
@@ -28,12 +28,6 @@ public class SettlementServiceTest extends ASpringTest {
 
   @MockBean
   private ISettlementMissionRpsy mockSettlementMissionRpsy;
-
-  @MockBean
-  private HistoricalPriceDBRepository rpsy;
-
-  private HistoricalPriceDBService dbService;
-
   @MockBean
   private IAgreementTransformer mockAgreementTransformer;
 
@@ -43,7 +37,6 @@ public class SettlementServiceTest extends ASpringTest {
   @Before
   public void setup() {
     service = new SettlementService(mockSettlementMissionRpsy, mockAgreementTransformer);
-    dbService = new HistoricalPriceDBService(rpsy);
   }
 
   @Test

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.extern.slf4j.Slf4j;
-import org.galatea.starter.domain.HistoricalPriceDB;
+import org.galatea.starter.domain.HistoricalPriceEntity;
 import org.galatea.starter.domain.SettlementMission;
 import org.galatea.starter.domain.TradeAgreement;
 import org.galatea.starter.entrypoint.messagecontracts.ProtobufMessages;
@@ -63,8 +63,8 @@ public class TestDataGenerator {
         .version(0L);
   }
 
-  public static HistoricalPriceDB defaultHistoricalPriceData() {
-    return new HistoricalPriceDB(BigDecimal.valueOf(100)
+  public static HistoricalPriceEntity defaultHistoricalPriceData() {
+    return new HistoricalPriceEntity(BigDecimal.valueOf(100)
         , BigDecimal.valueOf(100)
         , BigDecimal.valueOf(100)
         , BigDecimal.valueOf(100)

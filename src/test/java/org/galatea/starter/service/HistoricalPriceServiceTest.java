@@ -12,8 +12,8 @@ import java.time.LocalTime;
 import java.util.Optional;
 import org.galatea.starter.ASpringTest;
 import org.galatea.starter.domain.CompositePrimaryKey;
-import org.galatea.starter.domain.HistoricalPriceDB;
-import org.galatea.starter.domain.rpsy.HistoricalPriceDBRepository;
+import org.galatea.starter.domain.HistoricalPriceEntity;
+import org.galatea.starter.domain.rpsy.HistoricalPriceEntityRepository;
 import org.galatea.starter.testutils.TestDataGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,13 +22,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 public class HistoricalPriceServiceTest extends ASpringTest {
 
   @MockBean
-  private HistoricalPriceDBRepository rpsy;
+  private HistoricalPriceEntityRepository rpsy;
 
-  private HistoricalPriceDBService dbService;
+  private HistoricalPriceEntityService dbService;
 
   @Before
   public void setup() {
-    dbService = new HistoricalPriceDBService(rpsy);
+    dbService = new HistoricalPriceEntityService(rpsy);
   }
 
   @Test
@@ -37,10 +37,10 @@ public class HistoricalPriceServiceTest extends ASpringTest {
     LocalTime idTime = LocalTime.now().withMinute(0).withHour(0).withSecond(0).withNano(0);
     String idSymbol = "AAPL";
     CompositePrimaryKey key = new CompositePrimaryKey(idSymbol, idDate, idTime);
-    HistoricalPriceDB prices = TestDataGenerator.defaultHistoricalPriceData();
+    HistoricalPriceEntity prices = TestDataGenerator.defaultHistoricalPriceData();
     given(this.rpsy.findById(key))
         .willReturn(Optional.of(prices));
-    Optional<HistoricalPriceDB> maybeRetrieved = dbService.getPrices(key);
+    Optional<HistoricalPriceEntity> maybeRetrieved = dbService.getPrices(key);
     assertTrue(maybeRetrieved.isPresent());
   }
 
@@ -50,10 +50,10 @@ public class HistoricalPriceServiceTest extends ASpringTest {
     LocalTime idTime = LocalTime.now().withMinute(0).withHour(0).withSecond(0).withNano(0);
     String idSymbol = "AAPL";
     CompositePrimaryKey key = new CompositePrimaryKey(idSymbol, idDate, idTime);
-    HistoricalPriceDB prices = TestDataGenerator.defaultHistoricalPriceData();
+    HistoricalPriceEntity prices = TestDataGenerator.defaultHistoricalPriceData();
     given(this.rpsy.findById(key))
         .willReturn(Optional.of(prices));
-    Optional<HistoricalPriceDB> maybeRetrieved = dbService
+    Optional<HistoricalPriceEntity> maybeRetrieved = dbService
         .getPrices(new CompositePrimaryKey("FB", LocalDate.now().withMonth(7).withDayOfMonth(9),
             LocalTime.now().withMinute(0).withHour(0).withSecond(0).withNano(0)));
     assertFalse(maybeRetrieved.isPresent());
@@ -61,8 +61,8 @@ public class HistoricalPriceServiceTest extends ASpringTest {
 
   @Test
   public void testPriceIsSaved() {
-    HistoricalPriceDB prices =
-        new HistoricalPriceDB(BigDecimal.valueOf(1001)
+    HistoricalPriceEntity prices =
+        new HistoricalPriceEntity(BigDecimal.valueOf(1001)
             , BigDecimal.valueOf(1001)
             , BigDecimal.valueOf(1001)
             , BigDecimal.valueOf(1001)
@@ -72,7 +72,7 @@ public class HistoricalPriceServiceTest extends ASpringTest {
             , LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)
             , LocalTime.now());
     given(rpsy.save(prices)).willReturn(prices);
-    HistoricalPriceDB returnedPrice = dbService.save(prices);
+    HistoricalPriceEntity returnedPrice = dbService.save(prices);
     assertNotNull(returnedPrice);
   }
 
@@ -82,7 +82,7 @@ public class HistoricalPriceServiceTest extends ASpringTest {
         new CompositePrimaryKey("FB", LocalDate.now().withMonth(7).withDayOfMonth(9),
             LocalTime.now().withMinute(0).withHour(0).withSecond(0).withNano(0)))).
         willReturn(true);
-    HistoricalPriceDBService service = new HistoricalPriceDBService(rpsy);
+    HistoricalPriceEntityService service = new HistoricalPriceEntityService(rpsy);
     boolean exists =
         service.exists(new CompositePrimaryKey("FB", LocalDate.now().withMonth(7).withDayOfMonth(9),
             LocalTime.now().withMinute(0).withHour(0).withSecond(0).withNano(0)));

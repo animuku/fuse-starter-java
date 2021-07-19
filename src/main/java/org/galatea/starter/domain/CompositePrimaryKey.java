@@ -2,11 +2,8 @@ package org.galatea.starter.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 import lombok.Data;
-import net.bytebuddy.asm.Advice.Local;
 
 @Data
 public class CompositePrimaryKey implements Serializable {
