@@ -15,6 +15,7 @@ import java.util.Set;
 import org.galatea.starter.ASpringTest;
 import org.galatea.starter.domain.SettlementMission;
 import org.galatea.starter.domain.TradeAgreement;
+import org.galatea.starter.domain.rpsy.HistoricalPriceDBRepository;
 import org.galatea.starter.domain.rpsy.ISettlementMissionRpsy;
 import org.galatea.starter.entrypoint.exception.EntityNotFoundException;
 import org.galatea.starter.testutils.TestDataGenerator;
@@ -29,13 +30,20 @@ public class SettlementServiceTest extends ASpringTest {
   private ISettlementMissionRpsy mockSettlementMissionRpsy;
 
   @MockBean
+  private HistoricalPriceDBRepository rpsy;
+
+  private HistoricalPriceDBService dbService;
+
+  @MockBean
   private IAgreementTransformer mockAgreementTransformer;
 
   private SettlementService service;
 
+
   @Before
   public void setup() {
     service = new SettlementService(mockSettlementMissionRpsy, mockAgreementTransformer);
+    dbService = new HistoricalPriceDBService(rpsy);
   }
 
   @Test
@@ -45,7 +53,8 @@ public class SettlementServiceTest extends ASpringTest {
     SettlementMission testSettlementMission
         = TestDataGenerator.defaultSettlementMissionData().build();
 
-    given(this.mockSettlementMissionRpsy.findById(id)).willReturn(Optional.of(testSettlementMission));
+    given(this.mockSettlementMissionRpsy.findById(id))
+        .willReturn(Optional.of(testSettlementMission));
 
     Optional<SettlementMission> maybeRetrieved = service.findMission(id);
     assertTrue(maybeRetrieved.isPresent());
@@ -58,7 +67,8 @@ public class SettlementServiceTest extends ASpringTest {
     SettlementMission testSettlementMission
         = TestDataGenerator.defaultSettlementMissionData().id(id).build();
 
-    given(this.mockSettlementMissionRpsy.findById(id)).willReturn(Optional.of(testSettlementMission));
+    given(this.mockSettlementMissionRpsy.findById(id))
+        .willReturn(Optional.of(testSettlementMission));
 
     Optional<SettlementMission> maybeRetrieved = service.findMission(id + 1); // not the same id!!!
     assertFalse(maybeRetrieved.isPresent());
@@ -126,7 +136,8 @@ public class SettlementServiceTest extends ASpringTest {
     SettlementService service =
         new SettlementService(this.mockSettlementMissionRpsy, this.mockAgreementTransformer);
 
-    Optional<SettlementMission> settlementMissionOptional = service.updateMission(35L, testSettlementMission);
+    Optional<SettlementMission> settlementMissionOptional =
+        service.updateMission(35L, testSettlementMission);
     assertEquals((Long) 35L, settlementMissionOptional.get().getId());
   }
 

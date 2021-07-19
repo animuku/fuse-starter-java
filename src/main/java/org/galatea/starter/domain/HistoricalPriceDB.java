@@ -1,16 +1,13 @@
 package org.galatea.starter.domain;
 
-import io.swagger.models.auth.In;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import lombok.Builder;
+
 
 @Entity
 @IdClass(CompositePrimaryKey.class)
