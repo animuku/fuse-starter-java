@@ -1,6 +1,10 @@
 package org.galatea.starter.testutils;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import lombok.extern.slf4j.Slf4j;
+import org.galatea.starter.domain.HistoricalPriceEntity;
 import org.galatea.starter.domain.SettlementMission;
 import org.galatea.starter.domain.TradeAgreement;
 import org.galatea.starter.entrypoint.messagecontracts.ProtobufMessages;
@@ -57,5 +61,17 @@ public class TestDataGenerator {
         .direction("REC")
         .qty(100d)
         .version(0L);
+  }
+
+  public static HistoricalPriceEntity defaultHistoricalPriceData() {
+    return new HistoricalPriceEntity(BigDecimal.valueOf(100)
+        , BigDecimal.valueOf(100)
+        , BigDecimal.valueOf(100)
+        , BigDecimal.valueOf(100)
+        , "AAPL"
+        , 1000
+        , LocalDate.now().withMonth(7).withDayOfMonth(7).withYear(2021)
+        , LocalTime.now().withMinute(0).withHour(0).withSecond(0).withNano(0)
+        , LocalTime.now());
   }
 }
