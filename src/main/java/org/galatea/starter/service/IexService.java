@@ -72,15 +72,15 @@ public class IexService {
     if (symbols.length() == 0) {
       return Collections.emptyList();
     } else if (date == null) {
-      checkAndRetrieveForRange(service, symbols, range);
+      checkAndFetchForRange(service, symbols, range);
       return retrieveFromDBForRange(service, symbols, range);
     } else {
-      checkAndRetrieveForDate(service, symbols, date);
+      checkAndFetchForDate(service, symbols, date);
       return retrieveFromDBForDate(service, symbols, date);
     }
   }
 
-  public void checkAndRetrieveForRange(HistoricalPriceDBService service, String symbol,
+  public void checkAndFetchForRange(HistoricalPriceDBService service, String symbol,
       String rangeOfDays) {
     String r = rangeOfDays.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0];
     int range = 30;
@@ -135,7 +135,7 @@ public class IexService {
     return returnList;
   }
 
-  public void checkAndRetrieveForDate(HistoricalPriceDBService service, String symbols,
+  public void checkAndFetchForDate(HistoricalPriceDBService service, String symbols,
       String date) {
     int year = Integer.parseInt(date.substring(0, 4));
     int month = Integer.parseInt(date.substring(4, 6));
